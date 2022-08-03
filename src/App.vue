@@ -1,13 +1,25 @@
 <template>
-  <input
-    type="text"
-    v-model="name">
-
-  <button
-      class="btn btn-primary"
-      @click="onSubmit">
-    Click
-  </button>
+  <div class="container">
+    <h2>To-DO List</h2>
+    <form
+        @submit.prevent="onSubmit"
+        class="d-flex">
+      <div class="flex-grow-1 mr-2">
+        <input
+            class="form-control"
+            type="text"
+            v-model="todo">
+      </div>
+      <div>
+        <button
+            class="btn btn-primary"
+            @click="onSubmit">
+          Add
+        </button>
+      </div>
+    </form>
+    {{todos}}
+  </div>
 </template>
 
 <script>
@@ -15,21 +27,21 @@ import {ref} from "vue";
 
 export default {
   setup() {
-    const name = ref('최재민');
+    const todo = ref('최재민');
+    const todos = ref([]);
 
-
-    // const greeting = (name) => {
-    //   return 'Hello, ' + name;
-    // };
-    //
-    // const greet = greeting(name);
 
     const onSubmit = () => {
-      console.log(name.value)
+      console.log(todo.value)
+      todos.value.push({
+        id: Date.now(),
+        subject: todo.value,
+      })
     };
 
     return {
-      name,
+      todo,
+      todos,
       onSubmit,
     };
   }
