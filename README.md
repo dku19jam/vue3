@@ -1,5 +1,7 @@
 # vue3-project
 
+## 최재민의 우당탕탕 프론트 도전기
+
 ## Project setup
 ```
 npm install
