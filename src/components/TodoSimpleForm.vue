@@ -5,7 +5,9 @@
         <input
             class="form-control"
             type="text"
-            v-model="todo">
+            v-model="todo"
+            placeholder="Type new to-do"
+        >
       </div>
       <div>
         <button
