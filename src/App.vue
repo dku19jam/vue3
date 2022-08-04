@@ -4,31 +4,7 @@
     <TodoSimpleForm @add-todo="addTodo"></TodoSimpleForm>
 
     <div v-if="!todos.length">추가된 Todo가 없습니다</div>
-    <div
-        v-for="(todo, index) in todos"
-        :key="todo.id"
-        class="card mt-2">
-      <div class="card-body p-2 d-flex align-items-center">
-        <div class="form-check flex-grow-1" >
-          <input
-              class="form-check-input"
-              type="checkbox"
-              v-model="todo.completed"
-          >
-          <label
-              class="form-check-label"
-              :class="{todo: todo.completed}">
-            {{todo.subject}}
-          </label>
-        </div>
-        <div>
-          <button
-              class="btn btn-danger btn-sm"
-              @click="deleteTodo(index)"
-          >Delete</button>
-        </div>
-      </div>
-    </div>
+    <TodoList :todos="todos" @toggle-todo="toggleTodo"></TodoList>
 
   </div>
 </template>
@@ -36,10 +12,13 @@
 <script>
 import {ref} from "vue";
 import TodoSimpleForm from "@/components/TodoSimpleForm";
+import TodoList from "@/components/TodoList";
+
 
 export default {
   components:{
-    TodoSimpleForm
+    TodoSimpleForm,
+    TodoList,
   },
   setup() {
     const todos = ref([]);
@@ -52,6 +31,12 @@ export default {
       todos.value.push(todo);
     };
 
+    const toggleTodo = (index) => {
+      console.log(todos.value[index]);
+      todos.value[index].completed = !todos.value[index].completed;
+      console.log(todos.value[index]);
+    }
+
     const deleteTodo = (index) => {
       todos.value.splice(index, 1);
     }
@@ -61,7 +46,7 @@ export default {
       todoStyle,
       addTodo,
       deleteTodo,
-
+      toggleTodo,
     };
   }
 }
