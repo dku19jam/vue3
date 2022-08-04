@@ -12,7 +12,7 @@
         <div>
           <button
               class="btn btn-primary"
-              @click="onSubmit">
+              type="submit">
             Add
           </button>
         </div>
@@ -24,7 +24,18 @@
         :key="todo.id"
         class="card mt-2">
       <div class="card-body p-2">
-        {{todo.subject}}
+        <div class="form-check">
+          <input
+              class="form-check-input"
+              type="checkbox"
+              v-model="todo.completed"
+          >
+          <label
+              class="form-check-label"
+              :class="{todo: todo.completed}">
+            {{todo.subject}}
+          </label>
+        </div>
       </div>
     </div>
 
@@ -39,14 +50,11 @@ export default {
     const toggle = ref(false);
     const todo = ref('최재민');
     const hasError = ref(false);
-    const todos = ref([
-      {
-        id:1, subject: "휴대폰 사기",
-      },
-      {
-        id:2, subject: "장보기",
-      }
-    ]);
+    const todos = ref([]);
+    const todoStyle ={
+      textDecoration: 'line-through',
+      color: 'gray',
+    }
 
     const onSubmit = () => {
       if (todo.value === '') {
@@ -57,8 +65,10 @@ export default {
         todos.value.push({
           id: Date.now(),
           subject: todo.value,
+          completed: true,
         });
         hasError.value = false;
+        todo.value = '';
       }
     };
 
@@ -71,6 +81,7 @@ export default {
       toggle,
       todo,
       todos,
+      todoStyle,
       onSubmit,
       onToggle,
 
@@ -80,7 +91,8 @@ export default {
 </script>
 
 <style>
-.name {
-  color: #d06767;
-}
+  .todo {
+    color: gray;
+    text-decoration: line-through;
+  }
 </style>
