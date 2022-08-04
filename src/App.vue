@@ -4,7 +4,11 @@
     <TodoSimpleForm @add-todo="addTodo"></TodoSimpleForm>
 
     <div v-if="!todos.length">추가된 Todo가 없습니다</div>
-    <TodoList :todos="todos" @toggle-todo="toggleTodo"></TodoList>
+    <TodoList
+        :todos="todos"
+        @toggle-todo="toggleTodo"
+        @delete-todo="deleteTodo">
+    </TodoList>
 
   </div>
 </template>
