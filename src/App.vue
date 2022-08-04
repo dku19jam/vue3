@@ -39,24 +39,38 @@ export default {
       color: 'gray',
     }
 
-    const addTodo = (todo) => {
-      console.log('start');
-      axios.post("http://localhost:3000/todos", {
-        subject: todo.subject,
-        completed: todo.completed,
-      }).then(res => {
-        console.log(res)
+    const getTodos = async () =>{
+      try {
+        const res = await axios.get("http://localhost:3000/todos");
+        todos.value = res.data;
+      } catch (err){
+        console.log(err);
+      }
+    }
+    getTodos();
+    const addTodo = async (todo) => {
+      try {
+        const res = await axios.post("http://localhost:3000/todos", {
+          subject: todo.subject,
+          completed: todo.completed,
+        });
         todos.value.push(res.data);
-      }).catch(err =>{
-        console.log(err)
-      });
-      console.log('hello');
+      } catch (err) {
+        console.log('hello');
+      }
     };
 
     const toggleTodo = (index) => {
-      console.log(todos.value[index]);
-      todos.value[index].completed = !todos.value[index].completed;
-      console.log(todos.value[index]);
+
+      const id = todos.value[index].id;
+      try {
+          axios.patch("http://localhost:3000/todos/" + id,{
+          completed: !todos.value[index].completed
+        });
+        todos.value[index].completed = !todos.value[index].completed;
+      } catch (err){
+        console.log(err)
+      }
     }
 
     const searchText = ref("");
@@ -71,6 +85,14 @@ export default {
     })
 
     const deleteTodo = (index) => {
+      const id = todos.value[index].id;
+      try {
+        const res = axios.delete("http://localhost:3000/todos/" + id);
+        console.log(res);
+      } catch (err){
+        console.log(err)
+      }
+
       todos.value.splice(index, 1);
     }
 
@@ -80,6 +102,7 @@ export default {
       addTodo,
       deleteTodo,
       toggleTodo,
+      getTodos,
       searchText,
       filteredTodos,
     };
