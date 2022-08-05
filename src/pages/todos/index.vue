@@ -11,7 +11,6 @@
     >
     <hr>
     <TodoSimpleForm @add-todo="addTodo"></TodoSimpleForm>
-
     <div v-if="!todos.length">There is nothing to display</div>
     <TodoList
         :todos="todos"
