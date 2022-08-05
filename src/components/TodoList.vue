@@ -3,7 +3,10 @@
       v-for="(todo, index) in todos"
       :key="todo.id"
       class="card mt-2">
-    <div class="card-body p-2 d-flex align-items-center">
+    <div
+        class="card-body p-2 d-flex align-items-center"
+        @click="moveToPage(todo.id)"
+    >
       <div class="form-check flex-grow-1" >
         <input
             class="form-check-input"
@@ -29,6 +32,9 @@
 
 <script>
 import {watchEffect} from "vue";
+import {useRouter} from "vue-router";
+import router from "@/router";
+
 export default {
   props: {
     todos:{
@@ -47,9 +53,21 @@ export default {
     const deleteTodo = (index) => {
       emit('delete-todo', index);
     };
+
+    const moveToPage = (todoId) => {
+      console.log(todoId);
+      // router.push('/todos/' + todoId);
+      router.push({
+        name: 'Todo',
+        params:{
+          id: todoId,
+        }
+      });
+    }
     return{
       toggleTodo,
       deleteTodo,
+      moveToPage,
     }
   },
 };
