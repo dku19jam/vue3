@@ -6,13 +6,14 @@
         type="text"
         v-model="searchText"
         placeholder="search"
+        @keyup.enter="searchTodo"
     >
     <hr>
     <TodoSimpleForm @add-todo="addTodo"></TodoSimpleForm>
 
-    <div v-if="!filteredTodos.length">There is nothing to display</div>
+    <div v-if="!todos.length">There is nothing to display</div>
     <TodoList
-        :todos="filteredTodos"
+        :todos="todos"
         @toggle-todo="toggleTodo"
         @delete-todo="deleteTodo">
     </TodoList>
@@ -54,23 +55,12 @@ export default {
     const numberOfTodos = ref(0);
     const limit = 5;
     const currentPage = ref(1);
+    const searchText = ref("");
 
-    watch([currentPage,numberOfTodos], (currentPage,prev) =>{
-      console.log(currentPage,prev);
-    })
 
     const numberOfPages = computed(()=>{
       return Math.ceil(numberOfTodos.value / limit);
     })
-
-    // const a = reactive({
-    //   b: 1,
-    // });
-    //
-    // watchEffect(()=>{
-    //   console.log(a.b);
-    // })
-    // a.b = 4;
 
     const todoStyle ={
       textDecoration: 'line-through',
@@ -80,7 +70,7 @@ export default {
     const getTodos = async (page = currentPage.value) =>{
       currentPage.value = page;
       try {
-        const res = await axios.get(`http://localhost:3000/todos?_page=${page}&_limit=${limit}`);
+        const res = await axios.get(`http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`);
         numberOfTodos.value = res.headers['x-total-count'];
         todos.value = res.data;
       } catch (err){
@@ -90,11 +80,12 @@ export default {
     getTodos();
     const addTodo = async (todo) => {
       try {
-        const res = await axios.post("http://localhost:3000/todos", {
+        await axios.post("http://localhost:3000/todos", {
           subject: todo.subject,
           completed: todo.completed,
         });
-        todos.value.push(res.data);
+
+        getTodos(1);
       } catch (err) {
         console.log('hello');
       }
@@ -113,22 +104,29 @@ export default {
       }
     }
 
-    const searchText = ref("");
+    let timeout = null;
 
-    const filteredTodos =computed(()=>{
-      if (searchText.value) {
-        return todos.value.filter( todo => {
-          return todo.subject.includes(searchText.value);
-        });
-      }
-      return todos.value;
-    })
+    const searchTodo = () => {
+      clearTimeout(timeout);
+      getTodos(1);
+    };
+
+
+    watch(searchText, () => {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        getTodos(1);
+      }, 2000);
+
+    });
+
 
     const deleteTodo = (index) => {
       const id = todos.value[index].id;
       try {
-        const res = axios.delete("http://localhost:3000/todos/" + id);
-        console.log(res);
+        axios.delete("http://localhost:3000/todos/" + id);
+
+        getTodos(1);
       } catch (err){
         console.log(err)
       }
@@ -144,8 +142,9 @@ export default {
       deleteTodo,
       toggleTodo,
       getTodos,
+      searchTodo,
       searchText,
-      filteredTodos,
+      // filteredTodos,
       currentPage
     };
   }
