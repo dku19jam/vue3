@@ -5,6 +5,7 @@
       class="card mt-2">
     <div
         class="card-body p-2 d-flex align-items-center"
+        style="cursor: pointer"
         @click="moveToPage(todo.id)"
     >
       <div class="form-check flex-grow-1" >
@@ -12,7 +13,9 @@
             class="form-check-input"
             type="checkbox"
             :checked="todo.completed"
-            @change="toggleTodo(index)"
+            @change="toggleTodo(index, $event)"
+            @click.stop
+
         >
         <label
             class="form-check-label"
@@ -23,7 +26,7 @@
       <div>
         <button
             class="btn btn-danger btn-sm"
-            @click="deleteTodo(index)"
+            @click.stop="deleteTodo(index)"
         >Delete</button>
       </div>
     </div>
@@ -32,7 +35,6 @@
 
 <script>
 import {watchEffect} from "vue";
-import {useRouter} from "vue-router";
 import router from "@/router";
 
 export default {
@@ -47,15 +49,14 @@ export default {
     watchEffect(()=>{
       console.log(props.todos.length);
     })
-    const toggleTodo = (index) => {
-      emit('toggle-todo', index);
-    }
+    const toggleTodo = (index, event) => {
+      emit('toggle-todo', index, event.target.checked);
+    };
     const deleteTodo = (index) => {
       emit('delete-todo', index);
     };
 
     const moveToPage = (todoId) => {
-      console.log(todoId);
       // router.push('/todos/' + todoId);
       router.push({
         name: 'Todo',
