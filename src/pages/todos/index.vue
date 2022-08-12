@@ -34,8 +34,12 @@
           <a style="cursor: pointer" class="page-link" @click="getTodos(currentPage+1)">Next</a></li>
       </ul>
     </nav>
-
   </div>
+  <Toast
+    v-if="showToast"
+    :message="toastMessage"
+    :type="toastAlertType"
+  />
 </template>
 
 <script>
@@ -43,12 +47,15 @@ import {ref, computed, watch,} from "vue";
 import TodoSimpleForm from "@/components/TodoSimpleForm";
 import TodoList from "@/components/TodoList";
 import axios from "axios";
-
+import Toast from "@/components/Toast";
+import { useToast } from '@/hooks/toast'
 
 export default {
+
   components:{
     TodoSimpleForm,
     TodoList,
+    Toast,
   },
   setup() {
     const todos = ref([]);
@@ -56,11 +63,15 @@ export default {
     const limit = 5;
     const currentPage = ref(1);
     const searchText = ref("");
-
-
     const numberOfPages = computed(()=>{
       return Math.ceil(numberOfTodos.value / limit);
     })
+
+    const {
+      showToast,
+      toastMessage,
+      toastAlertType,
+      triggerToast,} = useToast();
 
     const todoStyle ={
       textDecoration: 'line-through',
@@ -75,6 +86,7 @@ export default {
         todos.value = res.data;
       } catch (err){
         console.log(err);
+        triggerToast('Something went wrong', 'danger');
       }
     }
     getTodos();
@@ -87,7 +99,7 @@ export default {
 
         getTodos(1);
       } catch (err) {
-        console.log('hello');
+        triggerToast('Something went wrong', 'danger');
       }
     };
 
@@ -100,6 +112,8 @@ export default {
         todos.value[index].completed = checked;
       } catch (err){
         console.log(err)
+        triggerToast('Something went wrong', 'danger');
+
       }
     }
 
@@ -127,7 +141,8 @@ export default {
 
         getTodos(1);
       } catch (err){
-        console.log(err)
+        console.log(err);
+        triggerToast('Something went wrong', 'danger');
       }
 
       todos.value.splice(index, 1);
@@ -144,7 +159,10 @@ export default {
       searchTodo,
       searchText,
       // filteredTodos,
-      currentPage
+      currentPage,
+      toastMessage,
+      toastAlertType,
+      showToast,
     };
   }
 }

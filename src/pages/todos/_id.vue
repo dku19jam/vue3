@@ -39,14 +39,16 @@
       :message="toastMessage"
       :type="toastAlertType"
   />
+  <div id="jaemin"></div>
 </template>
 
 <script>
 import {useRoute, useRouter} from 'vue-router';
 import axios from "axios";
-import {ref, computed} from "vue";
+import { ref, computed } from "vue";
 import _ from 'lodash';
 import Toast from "@/components/Toast";
+import {useToast} from "@/hooks/toast";
 
 export default {
   components:{
@@ -54,15 +56,19 @@ export default {
   },
 
   setup() {
+
     const route = useRoute();
     const router = useRouter();
     const todo = ref(null);
     const originalTodo = ref(null);
-    const loading = ref(true);
-    const showToast = ref(false);
-    const toastMessage = ref('');
-    const toastAlertType = ref('');
     const todoId = route.params.id;
+    const loading = ref(true);
+    const {
+      showToast,
+      toastMessage,
+      toastAlertType,
+      triggerToast,} = useToast();
+
 
     const getTodo = async () => {
       try {
@@ -107,17 +113,6 @@ export default {
       }
     };
     getTodo();
-
-    const triggerToast = (message, type = "success") => {
-      toastMessage.value = message;
-      showToast.value = true;
-      toastAlertType.value = type;
-      setTimeout(() => {
-        toastMessage.value = '';
-        toastAlertType.value = '';
-        showToast.value = false;
-      }, 3000);
-    };
 
     return{
       todo,
