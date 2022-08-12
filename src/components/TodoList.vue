@@ -8,36 +8,45 @@
         style="cursor: pointer"
         @click="moveToPage(todo.id)"
     >
-      <div class="form-check flex-grow-1" >
+      <div class="flex-grow-1" >
         <input
-            class="form-check-input"
+            class="mx-2"
             type="checkbox"
             :checked="todo.completed"
             @change="toggleTodo(index, $event)"
             @click.stop
 
         >
-        <label
-            class="form-check-label"
+        <span
             :class="{todo: todo.completed}">
           {{todo.subject}}
-        </label>
+        </span>
       </div>
       <div>
         <button
             class="btn btn-danger btn-sm"
-            @click.stop="deleteTodo(index)"
+            @click.stop="openModal(todo.id)"
         >Delete</button>
       </div>
     </div>
   </div>
+  <teleport to="#modal">
+    <Modal v-if="showModal"
+      @close="closeModal"
+      @delete="deleteTodo"
+    >
+    </Modal>
+  </teleport>
 </template>
-
 <script>
-import {watchEffect} from "vue";
+import { ref, watchEffect } from "vue";
 import router from "@/router";
+import Modal from "@/components/DeleteModal";
 
 export default {
+  components:{
+    Modal,
+  },
   props: {
     todos:{
       type: Array,
@@ -46,14 +55,27 @@ export default {
   },
   emits: ["toggle-todo","delete-todo"],
   setup(props, {emit}) {
+    const showModal = ref(false);
+    const todoDeleteId = ref(null);
     watchEffect(()=>{
       console.log(props.todos.length);
     })
     const toggleTodo = (index, event) => {
       emit('toggle-todo', index, event.target.checked);
     };
-    const deleteTodo = (index) => {
-      emit('delete-todo', index);
+    const openModal = (id) => {
+      todoDeleteId.value = id;
+      showModal.value = true;
+    };
+    const closeModal = () => {
+      todoDeleteId.value = null;
+      showModal.value = false;
+    };
+    const deleteTodo = () => {
+      emit('delete-todo', todoDeleteId.value);
+
+      showModal.value = false;
+      todoDeleteId.value = null;
     };
 
     const moveToPage = (todoId) => {
@@ -69,7 +91,10 @@ export default {
       toggleTodo,
       deleteTodo,
       moveToPage,
-    }
+      showModal,
+      openModal,
+      closeModal,
+    };
   },
 };
 </script>

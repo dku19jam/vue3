@@ -10,7 +10,7 @@
         <div class="form-group">
           <label>Subject</label>
           <input v-model="todo.subject" type="text" class="form-control">
-          <div v-if="subjectError" style="color: red">
+          <div v-if="subjectError" class="text-red">
             {{subjectError}}
           </div>
         </div>
@@ -42,11 +42,13 @@
     <button class="btn btn-outline-dark ml-2"
             @click="moveToTodoListPage">Cancel</button>
   </form>
+  <transition name="fade">
   <Toast
     v-if="showToast"
     :message="toastMessage"
     :type="toastAlertType"
   />
+  </transition>
 </template>
 
 <script>
@@ -169,5 +171,22 @@ export default {
 </script>
 
 <style scoped>
+  .text-red {
+    color: red;
+  }
 
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s ease;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
+
+  .fade-enter-to,
+  .fade-leave-from {
+    opacity: 1;
+  }
 </style>

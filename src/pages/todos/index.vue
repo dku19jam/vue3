@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <div>
   <div class="d-flex justify-content-between mb-3">
     <h2>To-DO List</h2>
     <button class="btn btn-primary"
@@ -41,6 +41,7 @@
     :message="toastMessage"
     :type="toastAlertType"
   />
+  </div>
 </template>
 
 <script>
@@ -141,18 +142,15 @@ export default {
     });
 
 
-    const deleteTodo = (index) => {
-      const id = todos.value[index].id;
+    const deleteTodo = async (id) => {
       try {
-        axios.delete("http://localhost:3000/todos/" + id);
+        await axios.delete("http://localhost:3000/todos/" + id);
 
         getTodos(1);
       } catch (err){
         console.log(err);
         triggerToast('Something went wrong', 'danger');
       }
-
-      todos.value.splice(index, 1);
     }
 
     return {
