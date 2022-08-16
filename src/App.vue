@@ -13,12 +13,35 @@
   <div class="container">
     <router-view/>
   </div>
+  <Toast
+    v-if="showToast"
+    :message="toastMessage"
+    :type="toastAlertType"></Toast>
 </template>
 
 <script>
+import Toast from '@/components/Toast'
+import {useToast} from "@/hooks/toast";
 
 export default {
+  components: {
+    Toast,
+  },
+  setup() {
+    const {
+      showToast,
+      toastMessage,
+      toastAlertType,
+      triggerToast,
+    } = useToast();
 
+    return {
+      showToast,
+      toastMessage,
+      toastAlertType,
+      triggerToast,
+    }
+  },
 }
 </script>
 
