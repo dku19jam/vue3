@@ -7,13 +7,6 @@
     @submit.prevent="onSave">
     <div class="row">
       <div class="col-6">
-<!--        <div class="form-group">-->
-<!--          <label>Subject</label>-->
-<!--          <input v-model="todo.subject" type="text" class="form-control">-->
-<!--          <div v-if="subjectError" class="text-red">-->
-<!--            {{subjectError}}-->
-<!--          </div>-->
-<!--        </div>-->
         <Input label="Subject" v-model:subject="todo.subject" :error="subjectError" @update-subject="updateTodoSubject"/>
       </div>
       <div v-if="editing" class="col-6">
@@ -44,11 +37,7 @@
             @click="moveToTodoListPage">Cancel</button>
   </form>
   <transition name="fade">
-  <Toast
-    v-if="showToast"
-    :message="toastMessage"
-    :type="toastAlertType"
-  />
+
   </transition>
 </template>
 
@@ -57,13 +46,11 @@ import {useRoute, useRouter} from 'vue-router';
 import axios from "@/axios";
 import { ref, computed } from "vue";
 import _ from 'lodash';
-import Toast from "@/components/Toast";
 import {useToast} from "@/hooks/toast";
 import Input from "@/components/Input";
 
 export default {
   components:{
-    Toast,
     Input,
   },
   props: {
@@ -73,7 +60,6 @@ export default {
     }
   },
   setup(props) {
-
     const route = useRoute();
     const router = useRouter();
     const todo = ref({

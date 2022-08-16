@@ -36,11 +36,6 @@
           <a style="cursor: pointer" class="page-link" @click="getTodos(currentPage+1)">Next</a></li>
       </ul>
     </nav>
-  <Toast
-    v-if="showToast"
-    :message="toastMessage"
-    :type="toastAlertType"
-  />
   </div>
 </template>
 
@@ -48,7 +43,6 @@
 import {ref, computed, watch,} from "vue";
 import TodoList from "@/components/TodoList";
 import axios from "@/axios";
-import Toast from "@/components/Toast";
 import { useToast } from '@/hooks/toast'
 import {useRouter} from "vue-router";
 
@@ -56,7 +50,6 @@ export default {
 
   components:{
     TodoList,
-    Toast,
   },
   setup() {
     const router = useRouter();

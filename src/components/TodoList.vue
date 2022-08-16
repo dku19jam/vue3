@@ -45,7 +45,7 @@
     </teleport>
 </template>
 <script>
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import router from "@/router";
 import Modal from "@/components/DeleteModal";
 import List from "@/components/List";
@@ -65,9 +65,6 @@ export default {
   setup(props, {emit}) {
     const showModal = ref(false);
     const todoDeleteId = ref(null);
-    watchEffect(()=>{
-      console.log(props.todos.length);
-    })
     const toggleTodo = (index, event) => {
       emit('toggle-todo', index, event.target.checked);
     };
